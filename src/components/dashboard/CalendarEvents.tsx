@@ -5,6 +5,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { CalendarX, Clock } from 'lucide-react';
+import { DayContentProps } from 'react-day-picker';
 
 type Event = {
   id: string;
@@ -68,11 +69,11 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
               modifiersClassNames={modifiersClassNames}
               // Custom CSS for dates with events (dot indicator)
               components={{
-                DayContent: ({ day, ...props }) => {
-                  const isEventDay = day && isDayWithEvents(day);
+                DayContent: (props: DayContentProps) => {
+                  const isEventDay = props.date && isDayWithEvents(props.date);
                   return (
                     <div className="relative w-full h-full flex items-center justify-center">
-                      <span {...props} />
+                      <div>{props.date.getDate()}</div>
                       {isEventDay && (
                         <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cattle-accent rounded-full" />
                       )}
