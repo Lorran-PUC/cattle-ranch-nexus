@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Download, FileText, Filter, ChevronDown, Calendar as CalendarIcon, BarChart } from 'lucide-react';
+import { Download, FileText, Filter, ChevronDown, Calendar as CalendarIcon} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,8 +10,8 @@ import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { BarChart as BarChartComponent } from '@/components/dashboard/BarChart';
-import { PieChart } from '@/components/dashboard/PieChart';
+import BarChart from '@/components/dashboard/BarChart';
+import PieChart from '@/components/dashboard/PieChart';
 
 // Dados simulados para relatórios
 const reportTypes = [

@@ -16,7 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { LineChart } from '@/components/dashboard/LineChart';
+import LineChart from '@/components/dashboard/LineChart';
+
 
 // Dados simulados para pesagens
 const mockWeights = [
