@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from './Sidebar';
 import Navbar from './Navbar';
-import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Outlet } from 'react-router-dom';
 
@@ -18,7 +17,7 @@ const Layout = () => {
           <AppSidebar isSidebarOpen={isSidebarOpen} />
           <main className={cn("flex-1 p-4 md:p-6 transition-all duration-200 mt-16", {
             "md:ml-64": isSidebarOpen,
-            "ml-16": !isSidebarOpen
+            "md:ml-16": !isSidebarOpen
           })}>
             <Outlet />
           </main>
