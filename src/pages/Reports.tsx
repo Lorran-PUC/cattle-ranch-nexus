@@ -161,12 +161,11 @@ const Reports = () => {
             <CardDescription>Ganho de peso por categoria no último semestre</CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
-            <BarChartComponent 
+            <BarChart
+              title="Bezerros no semestre"
               data={weightProgressData}
-              categories={['bezerros', 'novilhos', 'adultos']}
-              colors={['#D4A373', '#40916C', '#2D6A4F']}
               height={300}
-              direction="vertical"
+              dataKey="bezerros"
             />
           </CardContent>
           <CardFooter className="flex justify-end">
@@ -185,8 +184,8 @@ const Reports = () => {
           <CardContent className="pt-2">
             <div className="h-[300px]">
               <PieChart 
-                data={animalDistribution} 
-                colors={['#2D6A4F', '#40916C', '#74C69D', '#B7E4C7']} 
+                title="Distribuição do Rebanho"
+                data={animalDistribution}
               />
             </div>
           </CardContent>

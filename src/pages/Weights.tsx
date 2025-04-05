@@ -106,11 +106,10 @@ const Weights = () => {
           <CardDescription>Acompanhe o ganho de peso por tipo de animal</CardDescription>
         </CardHeader>
         <CardContent>
-          <LineChart 
-            data={weightChartData} 
-            categories={['touro', 'vaca', 'novilho', 'bezerro']} 
-            colors={['#2D6A4F', '#40916C', '#74C69D', '#B7E4C7']} 
-            height={300} 
+          <LineChart
+            title="Evolução de peso - Touros"
+            data={weightChartData}
+            dataKey="touro"
           />
         </CardContent>
       </Card>

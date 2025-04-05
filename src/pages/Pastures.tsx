@@ -67,8 +67,8 @@ const Pastures = () => {
           <CardContent>
             <div className="h-80">
               <PieChart 
+                title="Distribuição do Rebanho"
                 data={pastureDistribution} 
-                colors={['#2D6A4F', '#40916C', '#74C69D', '#B7E4C7']} 
               />
             </div>
           </CardContent>
