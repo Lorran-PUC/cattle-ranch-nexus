@@ -73,7 +73,7 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
                   const isEventDay = props.date && isDayWithEvents(props.date);
                   return (
                     <div className="relative w-full h-full flex items-center justify-center">
-                      <div>{props.date.getDate()}</div>
+                      <div className="text-foreground">{props.date.getDate()}</div>
                       {isEventDay && (
                         <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cattle-accent rounded-full" />
                       )}
