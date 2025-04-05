@@ -46,11 +46,6 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
     event: (date: Date) => isDayWithEvents(date),
   };
 
-  // Custom styling for dates with events
-  const modifiersStyles = {
-    event: { fontWeight: 'bold', position: 'relative' },
-  };
-
   // Create modifier classnames
   const modifiersClassNames = {
     event: "relative font-medium",
@@ -73,14 +68,17 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
               modifiersClassNames={modifiersClassNames}
               // Custom CSS for dates with events (dot indicator)
               components={{
-                DayContent: ({ date, ...props }) => (
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <span {...props} />
-                    {isDayWithEvents(date) && (
-                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cattle-accent rounded-full" />
-                    )}
-                  </div>
-                ),
+                DayContent: ({ day, ...props }) => {
+                  const isEventDay = day && isDayWithEvents(day);
+                  return (
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <span {...props} />
+                      {isEventDay && (
+                        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cattle-accent rounded-full" />
+                      )}
+                    </div>
+                  );
+                }
               }}
             />
           </div>
