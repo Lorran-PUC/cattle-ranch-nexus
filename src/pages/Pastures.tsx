@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { PieChart } from '@/components/dashboard/PieChart';
+import PieChart from "@/components/dashboard/PieChart";
 
 // Dados simulados para pastagens
 const pastureData = [
