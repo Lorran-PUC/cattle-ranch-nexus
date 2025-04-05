@@ -74,7 +74,7 @@ const Vaccination = () => {
       vacc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vacc.vaccine.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = filterStatus === '' || vacc.status === filterStatus;
+      const matchesStatus = filterStatus === 'todos' || vacc.status === filterStatus;
     
     return matchesSearch && matchesStatus;
   });
@@ -158,7 +158,7 @@ const Vaccination = () => {
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="todos">Todos</SelectItem>
                   <SelectItem value="Aplicada">Aplicada</SelectItem>
                   <SelectItem value="Pendente">Pendente</SelectItem>
                   <SelectItem value="Atrasada">Atrasada</SelectItem>
