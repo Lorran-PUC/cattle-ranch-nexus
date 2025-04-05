@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, CalendarMonth } from '@/components/ui/calendar';
+import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { CalendarX, Clock } from 'lucide-react';
@@ -41,21 +41,19 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
     );
   };
 
-  // Custom day renderer
-  const renderDay = (day: Date, cell: CalendarMonth["day"]) => {
-    const hasEvents = isDayWithEvents(day);
-    
-    return (
-      <div className={cn(
-        "relative",
-        hasEvents && "font-medium"
-      )}>
-        {cell.children}
-        {hasEvents && (
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cattle-accent rounded-full" />
-        )}
-      </div>
-    )
+  // Create modifiers for dates with events
+  const modifiers = {
+    event: (date: Date) => isDayWithEvents(date),
+  };
+
+  // Custom styling for dates with events
+  const modifiersStyles = {
+    event: { fontWeight: 'bold', position: 'relative' },
+  };
+
+  // Create modifier classnames
+  const modifiersClassNames = {
+    event: "relative font-medium",
   };
 
   return (
@@ -70,14 +68,20 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
               mode="single"
               selected={date}
               onSelect={setDate}
-              className="border rounded-md p-4"
-              modifiers={{
-                event: (date) => isDayWithEvents(date),
+              className="border rounded-md p-4 pointer-events-auto"
+              modifiers={modifiers}
+              modifiersClassNames={modifiersClassNames}
+              // Custom CSS for dates with events (dot indicator)
+              components={{
+                DayContent: ({ date, ...props }) => (
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <span {...props} />
+                    {isDayWithEvents(date) && (
+                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cattle-accent rounded-full" />
+                    )}
+                  </div>
+                ),
               }}
-              modifiersClassNames={{
-                event: "font-medium text-cattle-primary",
-              }}
-              renderDay={renderDay}
             />
           </div>
           <div className="space-y-3">
