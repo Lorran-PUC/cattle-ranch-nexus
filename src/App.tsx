@@ -12,6 +12,11 @@ import Layout from "./components/layout/Layout";
 // Pages
 import Dashboard from "./pages/Dashboard";
 import Animals from "./pages/Animals";
+import Vaccination from "./pages/Vaccination";
+import Weights from "./pages/Weights";
+import Reproduction from "./pages/Reproduction";
+import Pastures from "./pages/Pastures";
+import Reports from "./pages/Reports";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -30,12 +35,11 @@ const App = () => (
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/animals" element={<Animals />} />
-              {/* Adicionar as outras rotas aqui */}
-              {/* <Route path="/vaccination" element={<Vaccination />} /> */}
-              {/* <Route path="/weights" element={<Weights />} /> */}
-              {/* <Route path="/reproduction" element={<Reproduction />} /> */}
-              {/* <Route path="/pastures" element={<Pastures />} /> */}
-              {/* <Route path="/reports" element={<Reports />} /> */}
+              <Route path="/vaccination" element={<Vaccination />} />
+              <Route path="/weights" element={<Weights />} />
+              <Route path="/reproduction" element={<Reproduction />} />
+              <Route path="/pastures" element={<Pastures />} />
+              <Route path="/reports" element={<Reports />} />
               {/* <Route path="/settings" element={<Settings />} /> */}
             </Route>
             

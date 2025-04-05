@@ -48,7 +48,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon: Icon, label, isSidebarOpen 
             <NavLink 
               to={to} 
               className={({ isActive }) => cn(
-                "flex items-center justify-center h-10 w-10 rounded-md text-sidebar-foreground hover:bg-sidebar-accent/20 transition-colors mx-auto",
+                "flex items-center justify-center h-12 w-12 rounded-md text-sidebar-foreground hover:bg-sidebar-accent/20 transition-colors mx-auto",
                 isActive && "bg-sidebar-accent/20"
               )}
             >
@@ -74,8 +74,8 @@ const AppSidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
         <div className="py-4 flex-1 overflow-y-auto">
           <nav>
             <ul className={cn(
-              "space-y-2",
-              !isSidebarOpen && "px-3"
+              "space-y-3",
+              !isSidebarOpen && "flex flex-col items-center px-0"
             )}>
               <NavItem to="/" icon={Home} label="Dashboard" isSidebarOpen={isSidebarOpen} />
               <NavItem to="/animals" icon={Users} label="Animais" isSidebarOpen={isSidebarOpen} />
@@ -94,8 +94,8 @@ const AppSidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
           )}
           
           <ul className={cn(
-            "mt-2 space-y-2",
-            !isSidebarOpen && "px-3"
+            "mt-4 space-y-3",
+            !isSidebarOpen && "flex flex-col items-center px-0"
           )}>
             <NavItem to="/settings" icon={Settings} label="Configurações" isSidebarOpen={isSidebarOpen} />
           </ul>
@@ -104,7 +104,7 @@ const AppSidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
         <div className="border-t border-sidebar-border py-4">
           <div className={cn(
             "flex items-center text-sidebar-foreground cursor-pointer hover:bg-sidebar-accent/20 transition-colors rounded-md",
-            isSidebarOpen ? "px-4 py-2 mx-2" : "justify-center py-2"
+            isSidebarOpen ? "px-4 py-2 mx-2" : "py-2 mx-auto"
           )}>
             {isSidebarOpen ? (
               <>
@@ -132,7 +132,7 @@ const AppSidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
           
           <div className={cn(
             "flex items-center text-sidebar-foreground/80 cursor-pointer hover:bg-sidebar-accent/20 transition-colors rounded-md mt-2",
-            isSidebarOpen ? "px-4 py-2 mx-2" : "justify-center py-2"
+            isSidebarOpen ? "px-4 py-2 mx-2" : "justify-center py-2 mx-auto"
           )}>
             {isSidebarOpen ? (
               <>
