@@ -8,10 +8,9 @@ interface StatCardProps {
   value: string | number;
   description?: string;
   icon: React.ReactNode;
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
+  trend?: 'up' | 'down' | 'none';
+  trendValue?: number;
+  trendIsPositive?: boolean;
   className?: string;
 }
 
@@ -21,6 +20,8 @@ const StatCard: React.FC<StatCardProps> = ({
   description,
   icon,
   trend,
+  trendValue,
+  trendIsPositive,
   className
 }) => {
   return (
@@ -34,11 +35,11 @@ const StatCard: React.FC<StatCardProps> = ({
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
         <div className="flex items-center mt-1">
-          {trend && (
+          {trendValue && (
             <span className={cn("text-xs font-medium flex items-center mr-2",
-              trend.isPositive ? "text-cattle-success" : "text-cattle-danger"
+              trendIsPositive ? "text-cattle-success" : "text-cattle-danger"
             )}>
-              {trend.isPositive ? '+' : ''}{trend.value}%
+              {trendIsPositive ? '+' : ''}{trendValue}%
             </span>
           )}
           {description && (

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -97,14 +96,14 @@ const scheduledWeighings = [
 const Weights = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   
   const filteredWeights = mockWeights.filter(weight => {
     const matchesSearch = 
       weight.animal.toLowerCase().includes(searchTerm.toLowerCase()) ||
       weight.name.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategory = categoryFilter === '' || weight.category === categoryFilter;
+    const matchesCategory = categoryFilter === 'all' || weight.category === categoryFilter;
     
     return matchesSearch && matchesCategory;
   });
@@ -246,7 +245,7 @@ const Weights = () => {
                   <SelectValue placeholder="Categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas</SelectItem>
+                  <SelectItem value="all">Todas</SelectItem>
                   <SelectItem value="Bezerro">Bezerro</SelectItem>
                   <SelectItem value="Novilha">Novilha</SelectItem>
                   <SelectItem value="Boi">Boi</SelectItem>

@@ -83,28 +83,36 @@ const Dashboard = () => {
         <StatCard 
           title="Total de Animais" 
           value="247" 
-          description={{ value: 9, isPositive: true }}
+          description="Comparado ao mês anterior"
+          trendValue={9}
+          trendIsPositive={true}
           trend="up" 
           icon={<Beef />} 
         />
         <StatCard 
           title="Peso Médio" 
           value="320 kg" 
-          description={{ value: 2.5, isPositive: true }}
+          description="Ganho médio diário"
+          trendValue={2.5}
+          trendIsPositive={true}
           trend="up" 
           icon={<Weight />} 
         />
         <StatCard 
           title="Vacinações Pendentes" 
           value="12" 
-          description={{ value: 5, isPositive: false }}
+          description="Programadas para este mês"
+          trendValue={5}
+          trendIsPositive={false}
           trend="none" 
           icon={<Syringe />} 
         />
         <StatCard 
           title="Gestações Ativas" 
           value="18" 
-          description={{ value: 3, isPositive: true }}
+          description="Taxa de fertilidade"
+          trendValue={3}
+          trendIsPositive={true}
           trend="up" 
           icon={<Baby />} 
         />
