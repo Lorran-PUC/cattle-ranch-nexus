@@ -1,187 +1,303 @@
 
-import React from 'react';
-import { 
-  Plus, 
-  Download, 
-  Search, 
-  TrendingUp, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  Scale
-} from 'lucide-react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Calendar } from '@/components/ui/calendar';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PlusCircle, Filter, Calendar as CalendarIcon, ArrowUpDown, Search } from 'lucide-react';
 import LineChart from '@/components/dashboard/LineChart';
 
-
-// Dados simulados para pesagens
-const mockWeights = [
-  { id: 1, animal: 'BOV-2023-0045', name: 'Mimosa', category: 'Vaca', weight: 520, date: new Date(2024, 2, 15), change: 15 },
-  { id: 2, animal: 'BOV-2023-0089', name: 'Estrela', category: 'Novilha', weight: 330, date: new Date(2024, 2, 10), change: -5 },
-  { id: 3, animal: 'BOV-2022-0123', name: 'Trovão', category: 'Boi', weight: 620, date: new Date(2024, 2, 5), change: 25 },
-  { id: 4, animal: 'BOV-2022-0078', name: 'Bonanza', category: 'Bezerro', weight: 180, date: new Date(2024, 1, 28), change: 10 },
-  { id: 5, animal: 'BOV-2021-0034', name: 'Valente', category: 'Touro', weight: 850, date: new Date(2024, 1, 20), change: 0 },
-];
-
-// Dados para o gráfico
-const weightChartData = [
-  { name: 'Jan', touro: 830, vaca: 490, novilho: 310, bezerro: 150 },
-  { name: 'Fev', touro: 840, vaca: 500, novilho: 320, bezerro: 160 },
-  { name: 'Mar', touro: 850, vaca: 520, novilho: 330, bezerro: 180 },
-  { name: 'Abr', touro: 855, vaca: 525, novilho: 335, bezerro: 190 },
-  { name: 'Mai', touro: 860, vaca: 530, novilho: 340, bezerro: 200 },
-];
-
 const Weights = () => {
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [selectedTab, setSelectedTab] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Pesagens</h1>
-          <p className="text-muted-foreground">Monitore o desenvolvimento e ganho de peso do seu rebanho</p>
+          <h1 className="text-3xl font-bold tracking-tight">Pesagens</h1>
+          <p className="text-muted-foreground">
+            Registro e controle de pesagens do rebanho
+          </p>
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button className="whitespace-nowrap">
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Pesagem
-          </Button>
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Exportar
-          </Button>
-        </div>
+        <Button className="sm:w-auto w-full">
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Nova Pesagem
+        </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Peso Médio (Kg)</CardTitle>
-            <Scale className="h-4 w-4 text-muted-foreground" />
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Sidebar / Filtering */}
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Filter className="w-4 h-4 mr-2" />
+              Filtros
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">498.5</div>
-            <p className="text-xs text-muted-foreground mt-1">+2.1% em relação ao mês passado</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Maior Ganho</CardTitle>
-            <TrendingUp className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">25 Kg</div>
-            <p className="text-xs text-muted-foreground mt-1">Trovão (BOV-2022-0123)</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Pesagens</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">128</div>
-            <p className="text-xs text-muted-foreground mt-1">+14% em relação ao mês passado</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Peso Total (Kg)</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12,500</div>
-            <p className="text-xs text-muted-foreground mt-1">+3.2% em relação ao mês passado</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Evolução de Peso por Categoria</CardTitle>
-          <CardDescription>Acompanhe o ganho de peso por tipo de animal</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <LineChart
-            title="Evolução de peso - Touros"
-            data={weightChartData}
-            dataKey="touro"
-          />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <Tabs defaultValue="recentes">
-            <div className="flex items-center justify-between">
-              <CardTitle>Histórico de Pesagens</CardTitle>
-              <TabsList>
-                <TabsTrigger value="recentes">Recentes</TabsTrigger>
-                <TabsTrigger value="todos">Todos</TabsTrigger>
-              </TabsList>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="block mb-2">Categoria</Label>
+              <Select defaultValue="all">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Todas as categorias" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
+                  <SelectItem value="calf">Bezerros</SelectItem>
+                  <SelectItem value="heifer">Novilhas</SelectItem>
+                  <SelectItem value="bull">Touros</SelectItem>
+                  <SelectItem value="cow">Vacas</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+            
+            <div>
+              <Label className="block mb-2">Lote</Label>
+              <Select defaultValue="all">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Todos os lotes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os lotes</SelectItem>
+                  <SelectItem value="lot1">Lote 1</SelectItem>
+                  <SelectItem value="lot2">Lote 2</SelectItem>
+                  <SelectItem value="lot3">Lote 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label className="block mb-2">Data da Pesagem</Label>
+              <div className="mt-2">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="border rounded-md p-2"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Main content */}
+        <div className="md:col-span-9 space-y-6">
+          <Tabs defaultValue="all" onValueChange={setSelectedTab}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <TabsList>
+                <TabsTrigger value="all">Todos</TabsTrigger>
+                <TabsTrigger value="pending">Aguardando Pesagem</TabsTrigger>
+                <TabsTrigger value="recent">Pesagens Recentes</TabsTrigger>
+              </TabsList>
+              
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar animal..." 
+                  className="pl-9 w-full md:w-[250px]"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+            
+            <TabsContent value="all">
+              <Card>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>
+                          <Button variant="ghost" className="p-0 hover:bg-transparent">
+                            <span>Identificação</span>
+                            <ArrowUpDown className="ml-2 h-3 w-3" />
+                          </Button>
+                        </TableHead>
+                        <TableHead>Categoria</TableHead>
+                        <TableHead>Lote</TableHead>
+                        <TableHead>Última Pesagem</TableHead>
+                        <TableHead>Peso Atual (kg)</TableHead>
+                        <TableHead>Ganho Diário (kg)</TableHead>
+                        <TableHead>Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">#1201</TableCell>
+                        <TableCell>Vaca</TableCell>
+                        <TableCell>Lote 1</TableCell>
+                        <TableCell>01/05/2025</TableCell>
+                        <TableCell>420</TableCell>
+                        <TableCell>0.8</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm">Detalhes</Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">#1352</TableCell>
+                        <TableCell>Novilha</TableCell>
+                        <TableCell>Lote 2</TableCell>
+                        <TableCell>28/04/2025</TableCell>
+                        <TableCell>280</TableCell>
+                        <TableCell>0.6</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm">Detalhes</Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">#1458</TableCell>
+                        <TableCell>Bezerro</TableCell>
+                        <TableCell>Lote 3</TableCell>
+                        <TableCell>03/05/2025</TableCell>
+                        <TableCell>120</TableCell>
+                        <TableCell>0.5</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm">Detalhes</Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">#1089</TableCell>
+                        <TableCell>Touro</TableCell>
+                        <TableCell>Lote 1</TableCell>
+                        <TableCell>25/04/2025</TableCell>
+                        <TableCell>680</TableCell>
+                        <TableCell>0.9</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm">Detalhes</Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="pending">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Animais Aguardando Pesagem</CardTitle>
+                  <CardDescription>Animais com pesagem programada para hoje</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Identificação</TableHead>
+                        <TableHead>Categoria</TableHead>
+                        <TableHead>Lote</TableHead>
+                        <TableHead>Última Pesagem</TableHead>
+                        <TableHead>Dias Desde Última</TableHead>
+                        <TableHead>Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">#1102</TableCell>
+                        <TableCell>Vaca</TableCell>
+                        <TableCell>Lote 3</TableCell>
+                        <TableCell>04/04/2025</TableCell>
+                        <TableCell>30</TableCell>
+                        <TableCell>
+                          <Button variant="default" size="sm">Registrar Peso</Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">#1348</TableCell>
+                        <TableCell>Bezerro</TableCell>
+                        <TableCell>Lote 2</TableCell>
+                        <TableCell>04/04/2025</TableCell>
+                        <TableCell>30</TableCell>
+                        <TableCell>
+                          <Button variant="default" size="sm">Registrar Peso</Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="recent">
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Evolução de Peso - Últimos 6 meses</CardTitle>
+                    <CardDescription>Ganho médio diário por categoria animal</CardDescription>
+                  </CardHeader>
+                  <CardContent className="h-80">
+                    <LineChart />
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Histórico de Pesagens Recentes</CardTitle>
+                    <CardDescription>Últimas pesagens registradas no sistema</CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Data</TableHead>
+                          <TableHead>Lote</TableHead>
+                          <TableHead>Qtd. Animais</TableHead>
+                          <TableHead>Peso Médio (kg)</TableHead>
+                          <TableHead>GMD Médio (kg/dia)</TableHead>
+                          <TableHead>Ações</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>05/05/2025</TableCell>
+                          <TableCell>Lote 1</TableCell>
+                          <TableCell>45</TableCell>
+                          <TableCell>420</TableCell>
+                          <TableCell>0.75</TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm">Detalhes</Button>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>03/05/2025</TableCell>
+                          <TableCell>Lote 3</TableCell>
+                          <TableCell>28</TableCell>
+                          <TableCell>320</TableCell>
+                          <TableCell>0.65</TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm">Detalhes</Button>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>01/05/2025</TableCell>
+                          <TableCell>Lote 2</TableCell>
+                          <TableCell>35</TableCell>
+                          <TableCell>380</TableCell>
+                          <TableCell>0.70</TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm">Detalhes</Button>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
           </Tabs>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center relative mb-4">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Buscar por animal..."
-              className="pl-8 max-w-sm"
-            />
-          </div>
-          
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Animal</TableHead>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Peso (Kg)</TableHead>
-                  <TableHead>Variação</TableHead>
-                  <TableHead>Data</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockWeights.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.animal}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.category}</TableCell>
-                    <TableCell>{item.weight}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        {item.change > 0 ? (
-                          <>
-                            <ArrowUpRight className="mr-1 h-4 w-4 text-emerald-500" />
-                            <span className="text-emerald-500">+{item.change}</span>
-                          </>
-                        ) : item.change < 0 ? (
-                          <>
-                            <ArrowDownRight className="mr-1 h-4 w-4 text-red-500" />
-                            <span className="text-red-500">{item.change}</span>
-                          </>
-                        ) : (
-                          <span>0</span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {format(item.date, 'dd/MM/yyyy', { locale: ptBR })}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

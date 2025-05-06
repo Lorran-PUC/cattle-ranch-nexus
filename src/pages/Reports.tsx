@@ -1,229 +1,220 @@
 
-import React, { useState } from 'react';
-import { Download, FileText, Filter, ChevronDown, Calendar as CalendarIcon} from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Filter, Download, FileText, FileUp, Printer } from 'lucide-react';
 import BarChart from '@/components/dashboard/BarChart';
 import PieChart from '@/components/dashboard/PieChart';
 
-// Dados simulados para relatórios
-const reportTypes = [
-  { id: 'animals', name: 'Inventário de Animais' },
-  { id: 'weights', name: 'Evolução de Peso' },
-  { id: 'vaccinations', name: 'Vacinações' },
-  { id: 'births', name: 'Nascimentos' },
-  { id: 'pastures', name: 'Ocupação de Pastagens' },
-  { id: 'financial', name: 'Financeiro' },
-];
-
-// Dados para os gráficos
-const weightProgressData = [
-  { name: 'Jan', bezerros: 160, novilhos: 320, adultos: 520 },
-  { name: 'Fev', bezerros: 170, novilhos: 330, adultos: 525 },
-  { name: 'Mar', bezerros: 180, novilhos: 340, adultos: 530 },
-  { name: 'Abr', bezerros: 190, novilhos: 350, adultos: 535 },
-  { name: 'Mai', bezerros: 200, novilhos: 360, adultos: 540 },
-  { name: 'Jun', bezerros: 210, novilhos: 370, adultos: 545 },
-];
-
-const animalDistribution = [
-  { name: 'Vacas', value: 45 },
-  { name: 'Touros', value: 5 },
-  { name: 'Novilhas', value: 20 },
-  { name: 'Bezerros', value: 30 },
-];
-
 const Reports = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [reportType, setReportType] = useState('animals');
-
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
-          <p className="text-muted-foreground">Geração e análise de relatórios do rebanho</p>
+          <h1 className="text-3xl font-bold tracking-tight">Relatórios</h1>
+          <p className="text-muted-foreground">
+            Relatórios gerenciais e análises do rebanho
+          </p>
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button className="whitespace-nowrap">
-            <FileText className="mr-2 h-4 w-4" />
-            Novo Relatório
+        <div className="flex items-center gap-2">
+          <Button variant="outline" className="gap-2">
+            <Printer className="h-4 w-4" />
+            <span className="hidden sm:inline">Imprimir</span>
           </Button>
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Exportar PDF
+          <Button variant="outline" className="gap-2">
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline">Exportar</span>
           </Button>
         </div>
       </div>
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle>Gerar Relatório</CardTitle>
-          <CardDescription>Configure e gere relatórios personalizados</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Sidebar / Filtering */}
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Filter className="w-4 h-4 mr-2" />
+              Filtros
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Tipo de Relatório</label>
-              <Select value={reportType} onValueChange={setReportType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {reportTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <label className="text-sm font-medium block mb-2">Tipo de Relatório</label>
+              <select className="cattle-input w-full">
+                <option value="all">Todos os Relatórios</option>
+                <option value="finance">Financeiro</option>
+                <option value="production">Produção</option>
+                <option value="health">Saúde Animal</option>
+              </select>
             </div>
-
+            
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Período</label>
-              <div className="flex gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : <span>Data inicial</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      <span>Data final</span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+              <label className="text-sm font-medium block mb-2">Período</label>
+              <select className="cattle-input w-full mb-2">
+                <option value="month">Mês Atual</option>
+                <option value="quarter">Último Trimestre</option>
+                <option value="year">Ano Atual</option>
+                <option value="custom">Personalizado</option>
+              </select>
+              
+              <div className="mt-4">
+                <Calendar 
+                  mode="range" 
+                  selected={{
+                    from: new Date(2025, 4, 1),
+                    to: new Date(2025, 4, 31)
+                  }}
+                  className="border rounded-md p-2"
+                />
               </div>
             </div>
-
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">Filtros</label>
-              <Button variant="outline" className="w-full justify-between">
-                <div className="flex items-center">
-                  <Filter className="mr-2 h-4 w-4" />
-                  <span>Aplicar Filtros</span>
-                </div>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-4 pt-4 border-t">
-            <Button>Gerar Relatório</Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Evolução de Peso</CardTitle>
-            <CardDescription>Ganho de peso por categoria no último semestre</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <BarChart
-              title="Bezerros no semestre"
-              data={weightProgressData}
-              height={300}
-              dataKey="bezerros"
-            />
           </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button variant="outline" size="sm">
-              <Download className="mr-2 h-4 w-4" />
-              Exportar Dados
-            </Button>
-          </CardFooter>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribuição do Rebanho</CardTitle>
-            <CardDescription>Composição atual do rebanho por categoria</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <div className="h-[300px]">
-              <PieChart 
-                title="Distribuição do Rebanho"
-                data={animalDistribution}
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button variant="outline" size="sm">
-              <Download className="mr-2 h-4 w-4" />
-              Exportar Dados
-            </Button>
-          </CardFooter>
-        </Card>
+        
+        {/* Main content */}
+        <div className="md:col-span-9 space-y-6">
+          <Tabs defaultValue="overview">
+            <TabsList>
+              <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+              <TabsTrigger value="production">Produção</TabsTrigger>
+              <TabsTrigger value="financial">Financeiro</TabsTrigger>
+              <TabsTrigger value="health">Saúde</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Distribuição do Rebanho</CardTitle>
+                    <CardDescription>Por categoria animal</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-80">
+                      <PieChart />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Evolução do Rebanho</CardTitle>
+                    <CardDescription>Últimos 12 meses</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-80">
+                      <BarChart />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-muted-foreground" />
+                    Relatórios Recentes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome do Relatório</TableHead>
+                        <TableHead>Tipo</TableHead>
+                        <TableHead>Data</TableHead>
+                        <TableHead>Tamanho</TableHead>
+                        <TableHead className="text-right">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">Resumo Mensal - Maio/2025</TableCell>
+                        <TableCell>Gerencial</TableCell>
+                        <TableCell>05/05/2025</TableCell>
+                        <TableCell>245 KB</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Vacinação - 1º Trimestre 2025</TableCell>
+                        <TableCell>Sanitário</TableCell>
+                        <TableCell>01/04/2025</TableCell>
+                        <TableCell>180 KB</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">Análise Financeira - Q1 2025</TableCell>
+                        <TableCell>Financeiro</TableCell>
+                        <TableCell>15/03/2025</TableCell>
+                        <TableCell>320 KB</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="production" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Produção por Categoria Animal</CardTitle>
+                  <CardDescription>Desempenho produtivo do rebanho</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <BarChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="financial" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Análise Financeira</CardTitle>
+                  <CardDescription>Receitas e despesas do período</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <BarChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="health" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Indicadores de Saúde</CardTitle>
+                  <CardDescription>Status sanitário do rebanho</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <PieChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Relatórios Recentes</CardTitle>
-          <CardDescription>Acesse rapidamente os relatórios gerados recentemente</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {reportTypes.slice(0, 4).map((report, index) => (
-              <div key={report.id} className="flex items-center justify-between p-3 border rounded-md">
-                <div className="flex items-center gap-3">
-                  <div className="bg-muted p-2 rounded-md">
-                    <FileText className="h-5 w-5 text-cattle-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{report.name}</p>
-                    <p className="text-xs text-muted-foreground">Gerado em {format(new Date(2024, 2, 10 - index), 'dd/MM/yyyy', { locale: ptBR })}</p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm">
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

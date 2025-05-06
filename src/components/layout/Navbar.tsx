@@ -1,10 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { Menu, Bell, Sun, Moon } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/hooks/useTheme';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/context/AuthContext';
 
 interface NavbarProps {
   isSidebarOpen: boolean;
@@ -13,6 +14,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ isSidebarOpen, toggleSidebar }) => {
   const { theme, setTheme } = useTheme();
+  const { logout, user } = useAuth();
 
   return (
     <header className="h-16 bg-background border-b border-border flex items-center justify-between px-4 fixed top-0 left-0 right-0 z-50">
@@ -77,6 +79,25 @@ const Navbar: React.FC<NavbarProps> = ({ isSidebarOpen, toggleSidebar }) => {
             <Moon className="h-5 w-5" />
           )}
         </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="gap-2">
+              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="text-xs font-medium">
+                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                </span>
+              </div>
+              <span className="hidden md:inline">{user?.name || "Usuário"}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={logout} className="text-destructive cursor-pointer">
+              <LogOut className="w-4 h-4 mr-2" />
+              <span>Sair</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

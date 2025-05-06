@@ -1,147 +1,190 @@
 
 import React from 'react';
-import { Users, Activity, Syringe, Baby, Scale, Heart } from 'lucide-react';
-import StatCard from '@/components/dashboard/StatCard';
-import LineChart from '@/components/dashboard/LineChart';
-import BarChart from '@/components/dashboard/BarChart';
-import PieChart from '@/components/dashboard/PieChart';
-import CalendarEvents from '@/components/dashboard/CalendarEvents';
-
-// Dados simulados
-const weightData = [
-  { name: 'Jan', value: 420 },
-  { name: 'Fev', value: 435 },
-  { name: 'Mar', value: 450 },
-  { name: 'Abr', value: 470 },
-  { name: 'Mai', value: 480 },
-  { name: 'Jun', value: 495 },
-];
-
-const birthRateData = [
-  { name: '2019', value: 85 },
-  { name: '2020', value: 88 },
-  { name: '2021', value: 91 },
-  { name: '2022', value: 87 },
-  { name: '2023', value: 92 },
-  { name: '2024', value: 90 },
-];
-
-const breedData = [
-  { name: 'Nelore', value: 45, color: '#2D6A4F' },
-  { name: 'Angus', value: 25, color: '#40916C' },
-  { name: 'Brahman', value: 15, color: '#D4A373' },
-  { name: 'Gir', value: 10, color: '#95D5B2' },
-  { name: 'Outros', value: 5, color: '#E9EDC9' },
-];
-
-const calfData = [
-  { name: 'Jan', value: 8 },
-  { name: 'Fev', value: 12 },
-  { name: 'Mar', value: 5 },
-  { name: 'Abr', value: 9 },
-  { name: 'Mai', value: 14 },
-  { name: 'Jun', value: 10 },
-];
-
-const calendarEvents = [
-  {
-    id: '1',
-    title: 'Vacina Febre Aftosa - Lote 3',
-    date: new Date(2025, 3, 5, 9, 0), // 5 de abril de 2025, 9h
-    type: 'vaccination' as const,
-  },
-  {
-    id: '2',
-    title: 'Pesagem - Bezerros',
-    date: new Date(2025, 3, 8, 8, 0), // 8 de abril de 2025, 8h
-    type: 'weight' as const,
-  },
-  {
-    id: '3',
-    title: 'Parto Programado - #1245',
-    date: new Date(2025, 3, 5, 14, 0), // 5 de abril de 2025, 14h
-    type: 'reproduction' as const,
-  },
-  {
-    id: '4',
-    title: 'Rotação de Pastagens',
-    date: new Date(2025, 3, 10, 7, 0), // 10 de abril de 2025, 7h
-    type: 'other' as const,
-  },
-];
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import StatCard from "@/components/dashboard/StatCard";
+import BarChart from "@/components/dashboard/BarChart";
+import LineChart from "@/components/dashboard/LineChart";
+import PieChart from "@/components/dashboard/PieChart";
+import CalendarEvents from "@/components/dashboard/CalendarEvents";
+import { ArrowRight, Cow, Weight, Calendar, Syringe, BabySymbol, Trees } from "lucide-react";
 
 const Dashboard = () => {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <div className="text-sm text-muted-foreground">
-          Última atualização: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Bem-vindo ao sistema de gestão de rebanho.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button>
+            Novo Animal
+          </Button>
+          <Button variant="outline">
+            Exportar Relatório
+          </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Total de Animais"
-          value="254"
-          description="Última contagem"
-          icon={<Users size={18} />}
-          trend={{ value: 3.2, isPositive: true }}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard 
+          title="Total de Animais" 
+          value="247" 
+          description="9% aumento este mês" 
+          trend="up" 
+          icon={<Cow />} 
         />
-        <StatCard
-          title="Peso Médio"
-          value="495 kg"
-          description="Últimos 30 dias"
-          icon={<Scale size={18} />}
-          trend={{ value: 1.8, isPositive: true }}
+        <StatCard 
+          title="Peso Médio" 
+          value="320 kg" 
+          description="2.5% aumento este mês" 
+          trend="up" 
+          icon={<Weight />} 
         />
-        <StatCard
-          title="Taxa de Natalidade"
-          value="92%"
-          description="Este ano"
-          icon={<Baby size={18} />}
-          trend={{ value: 2.1, isPositive: true }}
+        <StatCard 
+          title="Vacinações Pendentes" 
+          value="12" 
+          description="5 com urgência" 
+          trend="none" 
+          icon={<Syringe />} 
         />
-        <StatCard
-          title="Vacinas Pendentes"
-          value="12"
-          description="Próximos 15 dias"
-          icon={<Syringe size={18} />}
-          trend={{ value: 5, isPositive: false }}
-        />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <LineChart
-          title="Evolução do Peso Médio (kg)"
-          data={weightData}
-          dataKey="value"
-          stroke="#40916C"
-        />
-        <BarChart
-          title="Taxa de Natalidade (%)"
-          data={birthRateData}
-          dataKey="value"
-          fill="#2D6A4F"
+        <StatCard 
+          title="Gestações Ativas" 
+          value="18" 
+          description="3 previsão p/ este mês" 
+          trend="up" 
+          icon={<BabySymbol />} 
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <PieChart
-          title="Distribuição por Raça"
-          data={breedData}
-          className="md:col-span-1"
-        />
-        <BarChart
-          title="Nascimentos por Mês"
-          data={calfData}
-          dataKey="value"
-          fill="#D4A373"
-          className="md:col-span-2"
-        />
+      <div className="grid gap-6 md:grid-cols-7">
+        <Card className="md:col-span-4">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Evolução do Rebanho</CardTitle>
+              <CardDescription>Crescimento mensal no último ano</CardDescription>
+            </div>
+            <Tabs defaultValue="quantity">
+              <TabsList>
+                <TabsTrigger value="quantity">Quantidade</TabsTrigger>
+                <TabsTrigger value="weight">Peso</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </CardHeader>
+          <CardContent>
+            <LineChart />
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <CardTitle>Distribuição por Categoria</CardTitle>
+            <CardDescription>Composição atual do rebanho</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PieChart />
+          </CardContent>
+          <CardFooter className="flex justify-between text-sm text-muted-foreground">
+            <div>Total: 247 animais</div>
+            <Button variant="ghost" size="sm" className="gap-1">
+              Detalhes <ArrowRight className="h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
 
-      <CalendarEvents events={calendarEvents} />
+      <div className="grid gap-6 md:grid-cols-7">
+        <Card className="md:col-span-3">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Próximos Eventos
+            </CardTitle>
+            <CardDescription>Calendário de atividades</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CalendarEvents />
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" className="w-full">Ver Calendário Completo</Button>
+          </CardFooter>
+        </Card>
+
+        <Card className="md:col-span-4">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Indicadores de Produção</CardTitle>
+              <CardDescription>Desempenho do último trimestre</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <BarChart />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-1.5">
+              <Syringe className="h-4 w-4" /> Vacinação
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12 pendentes</div>
+            <p className="text-xs text-muted-foreground">
+              5 animais com vacinas vencidas
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="ghost" size="sm" className="gap-1 w-full">
+              Ver Vacinações <ArrowRight className="h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-1.5">
+              <Weight className="h-4 w-4" /> Pesagens
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">15 agendadas</div>
+            <p className="text-xs text-muted-foreground">
+              Para os próximos 7 dias
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="ghost" size="sm" className="gap-1 w-full">
+              Ver Pesagens <ArrowRight className="h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-1.5">
+              <Trees className="h-4 w-4" /> Pastagens
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3 em uso</div>
+            <p className="text-xs text-muted-foreground">
+              1 em período de rotação
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="ghost" size="sm" className="gap-1 w-full">
+              Ver Pastagens <ArrowRight className="h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 };
