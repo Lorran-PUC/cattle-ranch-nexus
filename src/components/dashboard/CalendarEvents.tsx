@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { CalendarX, Clock } from 'lucide-react';
 import { DayContentProps } from 'react-day-picker';
+import { parseISO } from 'date-fns';
 
 type Event = {
   id: string;
   title: string;
-  date: Date;
-  type: 'vaccination' | 'weight' | 'reproduction' | 'other';
+  date: string | Date; // Allow both string and Date types
+  type: 'vaccination' | 'weight' | 'reproduction' | 'other' | 'pasture'; // Added 'pasture' type
 };
 
 interface CalendarEventsProps {
@@ -25,21 +26,34 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
 }) => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   
+  // Helper function to convert string dates to Date objects
+  const parseDate = (dateInput: string | Date): Date => {
+    if (dateInput instanceof Date) return dateInput;
+    return parseISO(dateInput);
+  };
+
   // Filter events for the selected date
-  const filteredEvents = events.filter(event => 
-    date && 
-    event.date.getDate() === date.getDate() &&
-    event.date.getMonth() === date.getMonth() &&
-    event.date.getFullYear() === date.getFullYear()
-  );
+  const filteredEvents = events.filter(event => {
+    if (!date) return false;
+    
+    const eventDate = parseDate(event.date);
+    return (
+      eventDate.getDate() === date.getDate() &&
+      eventDate.getMonth() === date.getMonth() &&
+      eventDate.getFullYear() === date.getFullYear()
+    );
+  });
 
   // Function to determine if a date has events
   const isDayWithEvents = (day: Date) => {
-    return events.some(event => 
-      event.date.getDate() === day.getDate() &&
-      event.date.getMonth() === day.getMonth() &&
-      event.date.getFullYear() === day.getFullYear()
-    );
+    return events.some(event => {
+      const eventDate = parseDate(event.date);
+      return (
+        eventDate.getDate() === day.getDate() &&
+        eventDate.getMonth() === day.getMonth() &&
+        eventDate.getFullYear() === day.getFullYear()
+      );
+    });
   };
 
   // Create modifiers for dates with events
@@ -99,29 +113,33 @@ const CalendarEvents: React.FC<CalendarEventsProps> = ({
               </div>
             ) : (
               <div className="space-y-2">
-                {filteredEvents.map(event => (
-                  <div 
-                    key={event.id} 
-                    className="p-3 border rounded-md flex items-start gap-2 bg-background hover:bg-muted/50 transition-colors"
-                  >
-                    <div className={cn(
-                      "w-1 self-stretch rounded-full",
-                      event.type === 'vaccination' && "bg-cattle-danger",
-                      event.type === 'weight' && "bg-cattle-primary",
-                      event.type === 'reproduction' && "bg-cattle-accent",
-                      event.type === 'other' && "bg-cattle-secondary"
-                    )} />
-                    <div className="flex-1">
-                      <p className="font-medium">{event.title}</p>
-                      <div className="flex items-center text-xs text-muted-foreground mt-1">
-                        <Clock size={12} className="mr-1" />
-                        <span>{event.date.toLocaleTimeString('pt-BR', { 
-                          hour: '2-digit', minute: '2-digit'
-                        })}</span>
+                {filteredEvents.map(event => {
+                  const eventDate = parseDate(event.date);
+                  return (
+                    <div 
+                      key={event.id} 
+                      className="p-3 border rounded-md flex items-start gap-2 bg-background hover:bg-muted/50 transition-colors"
+                    >
+                      <div className={cn(
+                        "w-1 self-stretch rounded-full",
+                        event.type === 'vaccination' && "bg-cattle-danger",
+                        event.type === 'weight' && "bg-cattle-primary",
+                        event.type === 'reproduction' && "bg-cattle-accent",
+                        event.type === 'pasture' && "bg-cattle-warning",
+                        event.type === 'other' && "bg-cattle-secondary"
+                      )} />
+                      <div className="flex-1">
+                        <p className="font-medium">{event.title}</p>
+                        <div className="flex items-center text-xs text-muted-foreground mt-1">
+                          <Clock size={12} className="mr-1" />
+                          <span>{eventDate.toLocaleTimeString('pt-BR', { 
+                            hour: '2-digit', minute: '2-digit'
+                          })}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
