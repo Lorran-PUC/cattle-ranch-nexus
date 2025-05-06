@@ -53,10 +53,10 @@ const Dashboard = () => {
 
   const mockCalendarEvents = {
     events: [
-      { date: "2025-05-10", title: "Vacinação - 12 Animais", type: "vaccination" },
-      { date: "2025-05-15", title: "Pesagem - Lote 2", type: "weight" },
-      { date: "2025-05-20", title: "Rotação de Pastagem", type: "pasture" },
-      { date: "2025-05-25", title: "Inseminação - 5 Vacas", type: "reproduction" }
+      { id: "1", date: "2025-05-10", title: "Vacinação - 12 Animais", type: "vaccination" },
+      { id: "2", date: "2025-05-15", title: "Pesagem - Lote 2", type: "weight" },
+      { id: "3", date: "2025-05-20", title: "Rotação de Pastagem", type: "pasture" },
+      { id: "4", date: "2025-05-25", title: "Inseminação - 5 Vacas", type: "reproduction" }
     ]
   };
 
@@ -83,28 +83,28 @@ const Dashboard = () => {
         <StatCard 
           title="Total de Animais" 
           value="247" 
-          description={{value: 9, isPositive: true}} 
+          description="Aumento de 9%" 
           trend="up" 
           icon={<Beef />} 
         />
         <StatCard 
           title="Peso Médio" 
           value="320 kg" 
-          description={{value: 2.5, isPositive: true}} 
+          description="Aumento de 2.5%" 
           trend="up" 
           icon={<Weight />} 
         />
         <StatCard 
           title="Vacinações Pendentes" 
           value="12" 
-          description={{value: 5, isPositive: false}} 
+          description="Aumento de 5%" 
           trend="none" 
           icon={<Syringe />} 
         />
         <StatCard 
           title="Gestações Ativas" 
           value="18" 
-          description={{value: 3, isPositive: true}} 
+          description="Aumento de 3%" 
           trend="up" 
           icon={<Baby />} 
         />

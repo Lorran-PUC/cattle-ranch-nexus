@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -220,7 +219,7 @@ const Presentation = () => {
             <TabsContent value="cowboy" className="p-4 bg-card rounded-lg border border-border shadow-sm">
               <div className="flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center">
-                  <Cow className="text-primary" />
+                  <Beef className="text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-medium mb-2">Vaqueiro</h3>
