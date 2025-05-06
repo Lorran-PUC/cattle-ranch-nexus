@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Search, Plus, Filter, Download } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -65,7 +64,7 @@ const mockVaccinations = [
 const Vaccination = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
+  const [filterStatus, setFilterStatus] = useState('todos');
 
   // Filtrar vacinações com base nos filtros aplicados
   const filteredVaccinations = mockVaccinations.filter(vacc => {
@@ -74,7 +73,7 @@ const Vaccination = () => {
       vacc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vacc.vaccine.toLowerCase().includes(searchTerm.toLowerCase());
     
-      const matchesStatus = filterStatus === 'todos' || vacc.status === filterStatus;
+    const matchesStatus = filterStatus === 'todos' || vacc.status === filterStatus;
     
     return matchesSearch && matchesStatus;
   });
