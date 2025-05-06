@@ -1,220 +1,283 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
-import { Filter, Download, FileText, FileUp, Printer } from 'lucide-react';
-import BarChart from '@/components/dashboard/BarChart';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { ArrowRight, Calendar as CalendarIcon, Download, FileText, Printer, BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import PieChart from '@/components/dashboard/PieChart';
+import BarChart from '@/components/dashboard/BarChart';
+
+// Dados simulados para gráficos
+const animalDistributionData = {
+  title: "Distribuição do Rebanho",
+  data: [
+    { name: "Bezerros", value: 45 },
+    { name: "Novilhas", value: 65 },
+    { name: "Bois", value: 87 },
+    { name: "Vacas", value: 50 }
+  ]
+};
+
+const weightGainData = {
+  title: "Ganho de Peso (kg/mês)",
+  data: [
+    { name: "Jan", atual: 12, anterior: 10 },
+    { name: "Fev", atual: 15, anterior: 12 },
+    { name: "Mar", atual: 14, anterior: 14 },
+    { name: "Abr", atual: 18, anterior: 15 },
+    { name: "Mai", atual: 17, anterior: 13 }
+  ],
+  dataKey: "atual"
+};
 
 const Reports = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [reportType, setReportType] = useState('animals');
+  const [dateRange, setDateRange] = useState({
+    from: new Date(2025, 0, 1),
+    to: new Date()
+  });
   
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Relatórios</h1>
-          <p className="text-muted-foreground">
-            Relatórios gerenciais e análises do rebanho
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">Relatórios</h1>
+          <p className="text-muted-foreground">Visualize e exporte dados do seu rebanho</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="gap-2">
-            <Printer className="h-4 w-4" />
-            <span className="hidden sm:inline">Imprimir</span>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Printer className="mr-2 h-4 w-4" />
+            Imprimir
           </Button>
-          <Button variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
-            <span className="hidden sm:inline">Exportar</span>
+          <Button>
+            <Download className="mr-2 h-4 w-4" />
+            Exportar
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Sidebar / Filtering */}
-        <Card className="md:col-span-3">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Filter className="w-4 h-4 mr-2" />
-              Filtros
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium block mb-2">Tipo de Relatório</label>
-              <select className="cattle-input w-full">
-                <option value="all">Todos os Relatórios</option>
-                <option value="finance">Financeiro</option>
-                <option value="production">Produção</option>
-                <option value="health">Saúde Animal</option>
-              </select>
+      <Card>
+        <CardHeader>
+          <CardTitle>Gerador de Relatórios</CardTitle>
+          <CardDescription>Selecione um tipo de relatório e o período</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="w-full md:w-1/3 space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Tipo de Relatório</label>
+                <Select value={reportType} onValueChange={setReportType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="animals">Relatório de Animais</SelectItem>
+                    <SelectItem value="weight">Relatório de Pesagens</SelectItem>
+                    <SelectItem value="vaccination">Relatório de Vacinação</SelectItem>
+                    <SelectItem value="breeding">Relatório de Reprodução</SelectItem>
+                    <SelectItem value="pasture">Relatório de Pastagens</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Período</label>
+                <div className="grid gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !dateRange && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dateRange?.from ? (
+                          dateRange.to ? (
+                            <>
+                              {format(dateRange.from, "dd/MM/yyyy", {locale: ptBR})} -{" "}
+                              {format(dateRange.to, "dd/MM/yyyy", {locale: ptBR})}
+                            </>
+                          ) : (
+                            format(dateRange.from, "dd/MM/yyyy", {locale: ptBR})
+                          )
+                        ) : (
+                          <span>Selecionar período</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="range"
+                        defaultMonth={dateRange.from}
+                        selected={dateRange}
+                        onSelect={setDateRange as any}
+                        numberOfMonths={2}
+                        locale={ptBR}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              <Button className="w-full">
+                Gerar Relatório
+                <FileText className="ml-2 h-4 w-4" />
+              </Button>
             </div>
             
-            <div>
-              <label className="text-sm font-medium block mb-2">Período</label>
-              <select className="cattle-input w-full mb-2">
-                <option value="month">Mês Atual</option>
-                <option value="quarter">Último Trimestre</option>
-                <option value="year">Ano Atual</option>
-                <option value="custom">Personalizado</option>
-              </select>
-              
-              <div className="mt-4">
-                <Calendar 
-                  mode="range" 
-                  selected={{
-                    from: new Date(2025, 4, 1),
-                    to: new Date(2025, 4, 31)
-                  }}
-                  className="border rounded-md p-2"
-                />
+            <div className="w-full md:w-2/3 bg-muted/30 rounded-md p-4 min-h-[300px] flex items-center justify-center">
+              <div className="text-center space-y-2">
+                <BookOpen className="mx-auto h-12 w-12 text-muted-foreground/70" />
+                <p>Selecione um tipo de relatório e clique em "Gerar Relatório"</p>
+                <p className="text-sm text-muted-foreground">Os dados serão exibidos aqui</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList>
+          <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+          <TabsTrigger value="animals">Rebanho</TabsTrigger>
+          <TabsTrigger value="weight">Pesagens</TabsTrigger>
+          <TabsTrigger value="financial">Financeiro</TabsTrigger>
+        </TabsList>
         
-        {/* Main content */}
-        <div className="md:col-span-9 space-y-6">
-          <Tabs defaultValue="overview">
-            <TabsList>
-              <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-              <TabsTrigger value="production">Produção</TabsTrigger>
-              <TabsTrigger value="financial">Financeiro</TabsTrigger>
-              <TabsTrigger value="health">Saúde</TabsTrigger>
-            </TabsList>
+        <TabsContent value="overview" className="space-y-6 mt-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Distribuição do Rebanho</CardTitle>
+                <CardDescription>Composição atual por categoria</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PieChart {...animalDistributionData} />
+              </CardContent>
+            </Card>
             
-            <TabsContent value="overview" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Distribuição do Rebanho</CardTitle>
-                    <CardDescription>Por categoria animal</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-80">
-                      <PieChart />
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Evolução do Rebanho</CardTitle>
-                    <CardDescription>Últimos 12 meses</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-80">
-                      <BarChart />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                    Relatórios Recentes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Nome do Relatório</TableHead>
-                        <TableHead>Tipo</TableHead>
-                        <TableHead>Data</TableHead>
-                        <TableHead>Tamanho</TableHead>
-                        <TableHead className="text-right">Ações</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">Resumo Mensal - Maio/2025</TableCell>
-                        <TableCell>Gerencial</TableCell>
-                        <TableCell>05/05/2025</TableCell>
-                        <TableCell>245 KB</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Vacinação - 1º Trimestre 2025</TableCell>
-                        <TableCell>Sanitário</TableCell>
-                        <TableCell>01/04/2025</TableCell>
-                        <TableCell>180 KB</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Análise Financeira - Q1 2025</TableCell>
-                        <TableCell>Financeiro</TableCell>
-                        <TableCell>15/03/2025</TableCell>
-                        <TableCell>320 KB</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
+            <Card>
+              <CardHeader>
+                <CardTitle>Ganho de Peso</CardTitle>
+                <CardDescription>Comparativo com período anterior</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <BarChart {...weightGainData} />
+              </CardContent>
+            </Card>
+          </div>
             
-            <TabsContent value="production" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Produção por Categoria Animal</CardTitle>
-                  <CardDescription>Desempenho produtivo do rebanho</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <BarChart />
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Indicadores de Saúde</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Vacinações em dia</span>
+                    <span className="font-medium">95%</span>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="financial" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Análise Financeira</CardTitle>
-                  <CardDescription>Receitas e despesas do período</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <BarChart />
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Taxa de mortalidade</span>
+                    <span className="font-medium">1.2%</span>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="health" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Indicadores de Saúde</CardTitle>
-                  <CardDescription>Status sanitário do rebanho</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <PieChart />
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Animais em tratamento</span>
+                    <span className="font-medium">3</span>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Indicadores Reprodutivos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Taxa de concepção</span>
+                    <span className="font-medium">87%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Gestações ativas</span>
+                    <span className="font-medium">18</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Nascimentos (últimos 30 dias)</span>
+                    <span className="font-medium">8</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Indicadores Financeiros</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Custo por animal/dia</span>
+                    <span className="font-medium">R$ 4,80</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Custo com alimentação</span>
+                    <span className="font-medium">R$ 18.750</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Margem bruta</span>
+                    <span className="font-medium">R$ 45.320</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="animals" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Relatório de Animais</CardTitle>
+              <CardDescription>Relatório detalhado do rebanho</CardDescription>
+            </CardHeader>
+            <CardContent className="h-[400px] flex items-center justify-center">
+              <p className="text-muted-foreground">Conteúdo do relatório de animais</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="weight" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Relatório de Pesagens</CardTitle>
+              <CardDescription>Histórico e evolução de peso</CardDescription>
+            </CardHeader>
+            <CardContent className="h-[400px] flex items-center justify-center">
+              <p className="text-muted-foreground">Conteúdo do relatório de pesagens</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="financial" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Relatório Financeiro</CardTitle>
+              <CardDescription>Análise de custos e receitas</CardDescription>
+            </CardHeader>
+            <CardContent className="h-[400px] flex items-center justify-center">
+              <p className="text-muted-foreground">Conteúdo do relatório financeiro</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

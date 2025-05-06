@@ -8,9 +8,58 @@ import BarChart from "@/components/dashboard/BarChart";
 import LineChart from "@/components/dashboard/LineChart";
 import PieChart from "@/components/dashboard/PieChart";
 import CalendarEvents from "@/components/dashboard/CalendarEvents";
-import { ArrowRight, Cow, Weight, Calendar, Syringe, BabySymbol, Trees } from "lucide-react";
+import { ArrowRight, Beef, Weight, Calendar, Syringe, Baby, Trees } from "lucide-react";
 
 const Dashboard = () => {
+  const mockLineChartData = {
+    title: "Crescimento mensal do rebanho",
+    data: [
+      { name: "Jan", value: 150 },
+      { name: "Fev", value: 158 },
+      { name: "Mar", value: 165 },
+      { name: "Abr", value: 170 },
+      { name: "Mai", value: 182 },
+      { name: "Jun", value: 190 },
+      { name: "Jul", value: 201 },
+      { name: "Ago", value: 220 },
+      { name: "Set", value: 230 },
+      { name: "Out", value: 235 },
+      { name: "Nov", value: 240 },
+      { name: "Dez", value: 247 }
+    ],
+    dataKey: "value"
+  };
+
+  const mockPieChartData = {
+    title: "Distribuição por Categoria",
+    data: [
+      { name: "Bezerros", value: 45 },
+      { name: "Novilhas", value: 65 },
+      { name: "Bois", value: 87 },
+      { name: "Vacas", value: 50 }
+    ]
+  };
+
+  const mockBarChartData = {
+    title: "Indicadores de Produção",
+    data: [
+      { name: "Produção", atual: 85, meta: 100 },
+      { name: "Consumo", atual: 65, meta: 60 },
+      { name: "Ganho", atual: 90, meta: 80 },
+      { name: "Conversão", atual: 75, meta: 85 }
+    ],
+    dataKey: "atual"
+  };
+
+  const mockCalendarEvents = {
+    events: [
+      { date: "2025-05-10", title: "Vacinação - 12 Animais", type: "vaccination" },
+      { date: "2025-05-15", title: "Pesagem - Lote 2", type: "weight" },
+      { date: "2025-05-20", title: "Rotação de Pastagem", type: "pasture" },
+      { date: "2025-05-25", title: "Inseminação - 5 Vacas", type: "reproduction" }
+    ]
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -34,30 +83,30 @@ const Dashboard = () => {
         <StatCard 
           title="Total de Animais" 
           value="247" 
-          description="9% aumento este mês" 
+          description={{value: 9, isPositive: true}} 
           trend="up" 
-          icon={<Cow />} 
+          icon={<Beef />} 
         />
         <StatCard 
           title="Peso Médio" 
           value="320 kg" 
-          description="2.5% aumento este mês" 
+          description={{value: 2.5, isPositive: true}} 
           trend="up" 
           icon={<Weight />} 
         />
         <StatCard 
           title="Vacinações Pendentes" 
           value="12" 
-          description="5 com urgência" 
+          description={{value: 5, isPositive: false}} 
           trend="none" 
           icon={<Syringe />} 
         />
         <StatCard 
           title="Gestações Ativas" 
           value="18" 
-          description="3 previsão p/ este mês" 
+          description={{value: 3, isPositive: true}} 
           trend="up" 
-          icon={<BabySymbol />} 
+          icon={<Baby />} 
         />
       </div>
 
@@ -76,7 +125,7 @@ const Dashboard = () => {
             </Tabs>
           </CardHeader>
           <CardContent>
-            <LineChart />
+            <LineChart {...mockLineChartData} />
           </CardContent>
         </Card>
 
@@ -86,7 +135,7 @@ const Dashboard = () => {
             <CardDescription>Composição atual do rebanho</CardDescription>
           </CardHeader>
           <CardContent>
-            <PieChart />
+            <PieChart {...mockPieChartData} />
           </CardContent>
           <CardFooter className="flex justify-between text-sm text-muted-foreground">
             <div>Total: 247 animais</div>
@@ -107,7 +156,7 @@ const Dashboard = () => {
             <CardDescription>Calendário de atividades</CardDescription>
           </CardHeader>
           <CardContent>
-            <CalendarEvents />
+            <CalendarEvents events={mockCalendarEvents.events} />
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full">Ver Calendário Completo</Button>
@@ -122,7 +171,7 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <BarChart />
+            <BarChart {...mockBarChartData} />
           </CardContent>
         </Card>
       </div>

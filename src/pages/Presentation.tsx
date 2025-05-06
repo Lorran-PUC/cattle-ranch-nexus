@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart2, Calendar, FileText, Cow, Syringe, Weight, Baby, PieChart, Users, ShieldCheck } from 'lucide-react';
+import { ArrowRight, BarChart2, Calendar, FileText, Beef, Syringe, Weight, Baby, PieChart, Users, ShieldCheck } from 'lucide-react';
 
 const Presentation = () => {
   const navigate = useNavigate();
   
   const features = [
     { 
-      icon: <Cow />, 
+      icon: <Beef />, 
       title: "Controle de Animais", 
       description: "Gerencie seu rebanho com informações detalhadas sobre cada animal, incluindo identificação, raça, idade e histórico completo." 
     },
