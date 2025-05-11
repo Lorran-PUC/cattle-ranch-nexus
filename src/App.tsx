@@ -29,6 +29,7 @@ import Weights from "./pages/Weights";
 import Reproduction from "./pages/Reproduction";
 import Pastures from "./pages/Pastures";
 import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,7 +57,7 @@ const App = () => (
                 <Route path="/reproduction" element={<Reproduction />} />
                 <Route path="/pastures" element={<Pastures />} />
                 <Route path="/reports" element={<Reports />} />
-                {/* <Route path="/settings" element={<Settings />} /> */}
+                <Route path="/settings" element={<Settings />} />
               </Route>
               
               {/* Redirect from root to presentation for unauthenticated users 
