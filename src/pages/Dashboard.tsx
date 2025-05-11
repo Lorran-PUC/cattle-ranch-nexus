@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { ArrowUpRight, CalendarIcon, LineChart, Users, Weight, Syringe, Cow } from 'lucide-react';
+import { ArrowUpRight, CalendarIcon, LineChart, Users, Weight, Syringe, Beef } from 'lucide-react';
 import { ptBR } from 'date-fns/locale';
 
 // Dados simulados para o dashboard
@@ -95,7 +95,7 @@ const ActivityIcon = ({ type }: { type: string }) => {
     case 'weight':
       return <div className="p-2 rounded-full bg-green-100"><Weight className="h-4 w-4 text-green-600" /></div>;
     case 'birth':
-      return <div className="p-2 rounded-full bg-purple-100"><Cow className="h-4 w-4 text-purple-600" /></div>;
+      return <div className="p-2 rounded-full bg-purple-100"><Beef className="h-4 w-4 text-purple-600" /></div>;
     case 'pasture':
       return <div className="p-2 rounded-full bg-amber-100"><ArrowUpRight className="h-4 w-4 text-amber-600" /></div>;
     default:
@@ -166,7 +166,7 @@ const Dashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Nascimentos</CardTitle>
-            <Cow className="h-4 w-4 text-muted-foreground" />
+            <Beef className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">8</div>
