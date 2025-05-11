@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from "@/components/ui/input"
@@ -43,7 +44,7 @@ interface NotificacoesFormValues {
 }
 
 const Settings = () => {
-  const { token } = useAuth();
+  const { user } = useAuth(); // Fix: use user instead of token
   const { toast } = useToast()
   const [usuario, setUsuario] = useState<Usuario>({
     id: '',
@@ -65,6 +66,13 @@ const Settings = () => {
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
+        // Fix: Use stored token from localStorage if available
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          throw new Error('No authentication token available');
+        }
+        
         const response = await fetch('/api/usuarios/me/', {
           headers: {
             'Authorization': `JWT ${token}`
@@ -86,11 +94,18 @@ const Settings = () => {
     };
 
     fetchUsuario();
-  }, [token, toast]);
+  }, [toast]);
 
   const handleUpdatePreferencias = async (data: PreferenciasFormValues) => {
     try {
       setIsSubmitting(true);
+      
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
       
       // Make API call here
       await fetch('/api/usuarios/me/', {
@@ -130,6 +145,13 @@ const Settings = () => {
   const handleUpdateNotificacoes = async (data: NotificacoesFormValues) => {
     try {
       setIsSubmitting(true);
+      
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token available');
+      }
       
       // Make API call here
       await fetch('/api/usuarios/me/', {
